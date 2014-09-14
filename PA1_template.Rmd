@@ -73,3 +73,17 @@ median(imputedtotalstepsperday$Steps)
 #The mean and median do not differ because I imputed a time interval mean for NA's. However, the total daily number of steps did increase because the NA's are now actual values contributing to a higher step count.
 ```
 ## Are there differences in activity patterns between weekdays and weekends?
+####1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+```{r}
+activity$daytype <- sapply(activity$date,function(x) if (weekdays(x) == "Saturday") {"weekend"} else if (weekdays(x) == "Sunday") {"weekend"} else {"weekday"})
+activity$daytype <- as.factor(activity$daytype)
+```
+####2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). The plot should look something like the following, which was creating using simulated data:
+```{r}
+library(lattice)
+tspdaytypactivity <- aggregate(steps~interval + daytype,activity,mean)
+colnames(tspdaytypactivity) <- c("Interval","DayType" , "Steps")
+xyplot(Steps~Interval | DayType, data=tspdaytypactivity, type = "l", xlab = "Time Interval", ylab = "Average Steps", main = "Average Steps By Interval and Type of Day", layout = c(1,2))
+
+
+```
